@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Basic Calculator</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .calculator {
+      background: #1e293b;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      width: 320px;
+    }
+    .display {
+      background: #0f172a;
+      color: #e2e8f0;
+      font-size: 2rem;
+      border: none;
+      width: 100%;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: right;
+      margin-bottom: 15px;
+    }
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    button {
+      font-size: 1.2rem;
+      padding: 15px;
+      border: none;
+      border-radius: 10px;
+      background: #334155;
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    button:hover {
+      background: #475569;
+      transform: translateY(-2px);
+    }
+    .operator { background: #7c3aed; }
+    .operator:hover { background: #6d28d9; }
+    .equal {
+      background: #059669;
+      grid-column: span 2;
+    }
+    .equal:hover { background: #047857; }
+    .clear { background: #dc2626; }
+    .clear:hover { background: #b91c1c; }
+  </style>
+</head>
+<body>
+  <div class="calculator">
+    <input type="text" id="display" class="display" disabled />
+    <div class="buttons">
+      <button class="clear" id="clear">C</button>
+      <button class="operator" data-op="/">÷</button>
+      <button class="operator" data-op="*">×</button>
+      <button class="operator" data-op="-">−</button>
+
+      <button>7</button>
+      <button>8</button>
+      <button>9</button>
+      <button class="operator" data-op="+">+</button>
+
+      <button>4</button>
+      <button>5</button>
+      <button>6</button>
+      <button>.</button>
+
+      <button>1</button>
+      <button>2</button>
+      <button>3</button>
+      <button class="equal" id="equal">=</button>
+
+      <button style="grid-column: span 4;">0</button>
+    </div>
+  </div>
+
+  <script>
+    const display = document.getElementById('display');
+    const buttons = document.querySelectorAll('button');
+    let current = '';
+
+    function updateDisplay(value) {
+      display.value = value;
+    }
+
+    buttons.forEach(button => {
+      button.addEventListener('click', () => {
+        const value = button.textContent;
+        if (button.id === 'clear') {
+          current = '';
+          updateDisplay(current);
+        } else if (button.id === 'equal') {
+          try {
+            current = eval(current.replace('×', '*').replace('÷', '/'));
+            updateDisplay(current);
+          } catch {
+            updateDisplay('Error');
+          }
+        } else {
+          current += value;
+          updateDisplay(current);
+        }
+      });
+    });
+
+    // Keyboard support
+    document.addEventListener('keydown', (e) => {
+      if ((e.key >= '0' && e.key <= '9') || ['+', '-', '*', '/', '.'].includes(e.key)) {
+        current += e.key;
+        updateDisplay(current);
+      } else if (e.key === 'Enter') {
+        try {
+          current = eval(current);
+          updateDisplay(current);
+        } catch {
+          updateDisplay('Error');
+        }
+      } else if (e.key === 'Backspace') {
+        current = current.slice(0, -1);
+        updateDisplay(current);
+      } else if (e.key.toLowerCase() === 'c') {
+        current = '';
+        updateDisplay(current);
+      }
+    });
+  </script>
+</body>
+</html>
